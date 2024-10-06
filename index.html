@@ -287,5 +287,55 @@
       src="https://loansaccount.com/form/applicationInit.js"
     ></script>
     <div id="_lg_form_"></div>
+    <script>
+      var formElement = document.getElementById("_lg_form_");
+
+      var isLoadingState = true;
+      var afterFormInitCallback = function () {
+        if (isLoadingState) {
+          isLoadingState = false;
+          return;
+        }
+
+        if (formElement.firstChild && formElement.firstChild.shadowRoot) {
+          var shadowRootFormElement =
+            formElement.firstChild.shadowRoot.getElementById("pr-lead-form-v3_inner");
+
+          var lastStepCallback = function () {
+            shadowRootFormElement.innerHTML = `
+              <div class="QeanVk kwVnqr EeYA1z" tabindex="1" role="dialog"><div class="ZzsGjx" tabindex="-1"></div><div class="IWXw9V"><div class="J3BtZT"><h4 class="hieZDw">Thanks!</h4><p class="Zyf8cz">We contact you to confirm your request!</p></div><div class="J3BtZT NObY3L"><div class="ibdL9m">
+              </div></div></div></div>
+            `;
+          };
+        }
+
+        var isRaplaced = false;
+
+        var afterFormInitCallback2 = function () {
+          if (isRaplaced) return;
+          var titles = Array.from(shadowRootFormElement.querySelectorAll(".DbrWdp") || []);
+          var isRequestCash = titles.some((title) => title.innerText === "Request Cash");
+          if (isRequestCash) {
+            isRaplaced = true;
+            var oldButton = shadowRootFormElement.querySelector("#id_button_submit");
+            var newButton = oldButton.cloneNode(true);
+            oldButton.parentNode.replaceChild(newButton, oldButton);
+            newButton.addEventListener("click", lastStepCallback);
+          }
+        };
+
+        var observer2 = new MutationObserver(afterFormInitCallback2);
+        observer2.observe(shadowRootFormElement, {
+          childList: true,
+          subtree: true,
+        });
+      };
+      var observer = new MutationObserver(afterFormInitCallback);
+      observer.observe(formElement, {
+        attributes: true,
+        childList: true,
+        subtree: true,
+      });
+    </script>
   </body>
 </html>
